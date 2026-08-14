@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const {BOOKING_STATUS} = require('../utils/constants');
-const {processing, successful, cancelled} = BOOKING_STATUS;
+const {processing, successful, cancelled, expired} = BOOKING_STATUS;
 
 const bookingSchema = new mongoose.Schema({
     theatreId: {
@@ -34,7 +34,7 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required: true,
         enum: {
-            values: [processing, cancelled, successful],
+            values: [processing, cancelled, successful, expired],
             message: "Invalid booking status"
         },
         default: processing
