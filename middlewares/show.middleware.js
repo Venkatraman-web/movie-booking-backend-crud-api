@@ -61,7 +61,7 @@ const validateCreateShowRequest = async (req, res, next) => {
 const validateUpdateShowRequest = async (req, res, next) => {
         if(req.body.theatreId || req.body.movieId){
             errorResponseBody.err = 'we cannot update already existing theatre and movie ';
-            return res.status(500).
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).
             json(errorResponseBody);
         }
 

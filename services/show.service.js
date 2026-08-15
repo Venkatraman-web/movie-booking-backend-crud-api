@@ -1,19 +1,22 @@
 const { Show } = require('../models/show.model');
 const { Theatre } = require('../models/theatre.model');
 
+const StatusCode = require('http-status-codes');
+const {StatusCodes} = StatusCode;
+
 const createShow = async (data) => {
     try {
     const theatre = await Theatre.findById(data.theatreId);
     if(!theatre){
         throw {
             err: 'No theatre found',
-            code: 404
+            code: StatusCodes.NOT_FOUND
         }
     }
     if(theatre.movies.indexOf(data.movieId) == -1){
         throw {
                     err: 'Movie with this id is not running in the theatre',
-                    code: 404
+                    code: StatusCodes.NOT_FOUND
                 }
     }
     const response = await Show.create(data);
@@ -27,7 +30,7 @@ const createShow = async (data) => {
                     err[key] = error.errors[key].message;
                 });
                 console.log(err);
-                return {err: err, code: 422};
+                return {err: err, code: StatusCodes.UNPROCESSABLE_ENTITY};
             }else{
             throw error;
 
@@ -48,7 +51,7 @@ const getShows = async (data) => {
         if(!response){
             throw {
                 err: 'No shows found',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
         return response;
@@ -63,7 +66,7 @@ const deleteShow = async (id) => {
         if(!response){
             throw {
                 err: 'No shows found',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
         return response;
@@ -78,7 +81,7 @@ const updateShow = async (id, data) => {
         if(!response){
             throw {
                 err: 'No shows found',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
         return response;
@@ -90,7 +93,7 @@ const updateShow = async (id, data) => {
                     err[key] = error.errors[key].message;
                 });
                 console.log(err);
-                return {err: err, code: 422};
+                return {err: err, code: StatusCodes.UNPROCESSABLE_ENTITY};
             }else{
             throw error;
 

@@ -4,13 +4,16 @@ const { USER_STATUS, USER_ROLE } = require('../utils/constants.js');
 const { approved, pending, rejected } = USER_STATUS;
 const { customer, client, admin } = USER_ROLE;
 
+const StatusCode = require('http-status-codes');
+const {StatusCodes} = StatusCode;
+
 const createUser = async (data) => {
     try {
         if(!data.userRole || data.userRole == customer){
             if(data.userStatus && data.userStatus != approved){
                 throw {
                     err: 'We cannot set any other status for customer',
-                    code: 400
+                    code: StatusCodes.BAD_REQUEST
                 };
             }
         }
@@ -28,7 +31,7 @@ const createUser = async (data) => {
                     err[key] = error.errors[key].message;
                 });
                 console.log(err);
-                return {err: err, code: 422};
+                return {err: err, code: StatusCodes.UNPROCESSABLE_ENTITY};
             }else{
             throw error;
 
@@ -44,7 +47,7 @@ const getUserByEmail = async (email) => {
         if(!response){
             throw {
                 err: 'No user found for given email',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
         return response;
@@ -61,7 +64,7 @@ const getUserById = async (id) => {
         if(!user){
             throw {
                 err: 'No user found from given id',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
         return user;
@@ -95,7 +98,7 @@ const updateUserRoleOrStatus = async (data, userId) => {
         if (!response) {
             throw {
                 err: 'Not able to find user with that id',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             };
         }
 
@@ -113,7 +116,7 @@ const updateUserRoleOrStatus = async (data, userId) => {
 
             throw {
                 err: err,
-                code: 422
+                code: StatusCodes.UNPROCESSABLE_ENTITY
             };
         }
 

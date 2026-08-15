@@ -85,7 +85,7 @@ const isAuthenticated = async (req, res, next) => {
         }
 
         errorResponseBody.err = error;
-        return res.status(500).
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).
             json(errorResponseBody);
 
     }

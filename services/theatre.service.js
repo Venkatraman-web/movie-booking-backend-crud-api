@@ -1,6 +1,9 @@
 const { Movie } = require('../models/movie.model')
 const { Theatre }= require('../models/theatre.model');
 
+const StatusCode = require('http-status-codes');
+const {StatusCodes} = StatusCode;
+
 const createTheatre = async (data) => {
     try {
     const response = await Theatre.create(data);
@@ -14,7 +17,7 @@ const createTheatre = async (data) => {
                     err[key] = error.errors[key].message;
                 });
                 console.log(err);
-                return {err: err, code: 422};
+                return {err: err, code: StatusCodes.UNPROCESSABLE_ENTITY};
             }else{
             throw error;
 
@@ -29,7 +32,7 @@ const deleteTheatre = async (id) => {
         if(!response){
             return {
                 err: 'No record of theatre found for given id',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
         return response;
@@ -45,7 +48,7 @@ const getTheatre = async (id) => {
         if(!response){
             return {
                 err: 'No theatre found for given id',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
         return response;
@@ -84,7 +87,7 @@ const getAllTheatres = async (data) => {
         if(!response){
             return {
                 err: 'No theatres found',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
 
@@ -103,7 +106,7 @@ const updateTheatre = async (id, data) => {
         if(!response){
             return {
                 err: 'No theatres found',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
         return response;
@@ -114,7 +117,7 @@ const updateTheatre = async (id, data) => {
                     err[key] = error.errors[key].message;
                 });
                 console.log(err);
-                return {err: err, code: 422};
+                return {err: err, code: StatusCodes.UNPROCESSABLE_ENTITY};
             }else{
             throw error;
 
@@ -146,7 +149,7 @@ const updateMoviesInTheatres = async (theatreId, movieIds, insert) => {
         } catch (error) {
             if(error.name == 'TypeError'){
                 return {
-                    code: 404,
+                    code: StatusCodes.NOT_FOUND,
                     err: 'No theatre found for given id'
                 }
             }
@@ -162,7 +165,7 @@ const getMoviesInATheatre = async (theatreId) => {
         if(!theatre){
             return {
                 err: 'No theatre with given id found',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
         return theatre;
@@ -178,7 +181,7 @@ const checkMovieInATheatre = async (theatreId, movieId) => {
         if(!response){
             return {
                 err: 'No such theatre found for given id',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
         return response.movies.indexOf(movieId) != -1;

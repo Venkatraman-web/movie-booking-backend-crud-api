@@ -1,6 +1,10 @@
 const { Booking } = require('../models/booking.model');
 const { Show } = require('../models/show.model');
 
+const StatusCode = require('http-status-codes');
+const {StatusCodes} = StatusCode;
+
+
 const createBooking = async (data) => {
     try {
         const show = await Show.findOne({
@@ -20,7 +24,7 @@ const createBooking = async (data) => {
                     err[key] = error.errors[key].message;
                 });
                 console.log(err);
-                return {err: err, code: 422};
+                return {err: err, code: StatusCodes.UNPROCESSABLE_ENTITY};
             }else{
             throw error;
 
@@ -35,7 +39,7 @@ const updateBooking = async (data, bookingId) => {
         if(!response){
             throw {
                 err: 'could not update as id not present',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
         
@@ -48,7 +52,7 @@ const updateBooking = async (data, bookingId) => {
                     err[key] = error.errors[key].message;
                 });
                 console.log(err);
-                return {err: err, code: 422};
+                return {err: err, code: StatusCodes.UNPROCESSABLE_ENTITY};
             }else{
             throw error;
 
@@ -82,14 +86,14 @@ const getBookingById = async (id, userId) => {
         if(!response){
             throw {
                 err: 'No bookings found for given id',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
 
         if(response.userId != userId){
             throw {
                 err: 'Not able to access the booking',
-                code: 404
+                code: StatusCodes.FORBIDDEN,
             }
         }
 

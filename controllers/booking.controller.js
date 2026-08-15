@@ -1,6 +1,9 @@
 const {errorResponseBody, successResponseBody} = require('../utils/responsebody');
 const bookingService = require('../services/booking.service');
 
+const StatusCode = require('http-status-codes');
+const {StatusCodes} = StatusCode;
+
 const create = async (req, res) => {
     try {
         const userId = req.user;
@@ -8,7 +11,7 @@ const create = async (req, res) => {
 
         successResponseBody.data = response;
         successResponseBody.message = 'Successfully created a booking';
-        return res.status(201).
+        return res.status(StatusCodes.OK).
         json(successResponseBody);
     } catch (error) {
         console.log(error);
@@ -18,7 +21,7 @@ const create = async (req, res) => {
             json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(500).
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).
         json(errorResponseBody);
     }
 }
@@ -29,7 +32,7 @@ const update = async (req, res) => {
 
         successResponseBody.data = response;
         successResponseBody.message = 'Successfully updated data of booking';
-        return res.status(200).
+        return res.status(StatusCodes.OK).
         json(successResponseBody);
     } catch (error) {
         console.log(error);
@@ -39,7 +42,7 @@ const update = async (req, res) => {
             json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(500).
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).
         json(errorResponseBody);
     }
 }
@@ -50,7 +53,7 @@ const getBookings = async (req, res) => {
 
         successResponseBody.data = response;
         successResponseBody.message = 'Successfully updated data of booking';
-        return res.status(200).
+        return res.status(StatusCodes.OK).
         json(successResponseBody);
 
     } catch (error) {
@@ -61,7 +64,7 @@ const getBookings = async (req, res) => {
             json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(500).
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).
         json(errorResponseBody);
     }
 }
@@ -72,7 +75,7 @@ const getAllBookings = async (req, res) => {
 
         successResponseBody.data = response;
         successResponseBody.message = 'Successfully updated data of booking';
-        return res.status(200).
+        return res.status(StatusCodes.OK).
         json(successResponseBody);
 
     } catch (error) {
@@ -83,7 +86,7 @@ const getAllBookings = async (req, res) => {
             json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(500).
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).
         json(errorResponseBody);
     }
 }
@@ -93,7 +96,7 @@ const getBookingById = async (req, res) => {
         const response = await bookingService.getBookingById(req.params.id, req.user);
         successResponseBody.data = response;
         successResponseBody.message = 'Successfully got booking of that id';
-        return res.status(200).
+        return res.status(StatusCodes.OK).
         json(successResponseBody);
     } catch (error) {
         console.log(error);
@@ -103,7 +106,7 @@ const getBookingById = async (req, res) => {
             json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(500).
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).
         json(errorResponseBody);
     }
 }

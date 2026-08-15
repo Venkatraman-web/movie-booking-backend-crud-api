@@ -3,6 +3,7 @@ const {StatusCodes} = StatusCode;
 
 const theatreService = require('../services/theatre.service');
 const { successResponseBody, errorResponseBody } = require('../utils/responsebody');
+const emailService = require('../services/email.service');
 
 const create = async (req, res) => {
     try {
@@ -14,6 +15,11 @@ const create = async (req, res) => {
             json(errorResponseBody);
 
         }
+        emailService.sendMail(
+            'Successfully created a theatre',
+            req.user,
+            'You have successfully created a new theatre'
+        )
         successResponseBody.data = response;
         successResponseBody.message = 'Successfully created the theatre';
         return res.status(StatusCodes.OK).

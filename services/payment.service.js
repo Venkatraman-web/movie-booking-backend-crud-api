@@ -4,6 +4,9 @@ const { BOOKING_STATUS, PAYMENT_STATUS, USER_ROLE } = require('../utils/constant
 const { User } = require('../models/user.model');
 const { Show } = require('../models/show.model');
 
+const StatusCode = require('http-status-codes');
+const {StatusCodes} = StatusCode;
+
 const createPayment = async (data) => {
     try {
     const booking = await Booking.findById(data.bookingId);
@@ -16,13 +19,13 @@ const createPayment = async (data) => {
     if(booking.status == BOOKING_STATUS.successful){
         throw {
             err: 'Booking already done, cannot make a new payment against it',
-            code: 404,
+            code: StatusCodes.NOT_FOUND,
         }
     }
     if(!booking){
         throw {
             err: 'No theatre found',
-            code: 404
+            code: StatusCodes.NOT_FOUND
         }
     }
     
@@ -74,7 +77,7 @@ const createPayment = async (data) => {
                     err[key] = error.errors[key].message;
                 });
                 console.log(err);
-                return {err: err, code: 422};
+                return {err: err, code: StatusCodes.UNPROCESSABLE_ENTITY};
             }else{
             throw error;
 
@@ -91,7 +94,7 @@ const getPaymentById = async (id) => {
     if(!payment){
         return {
             err: 'No payment for given id',
-            code: 404
+            code: StatusCodes.NOT_FOUND
         }
     }
     return payment;

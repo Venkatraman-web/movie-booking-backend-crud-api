@@ -30,7 +30,16 @@ PaymentRoutes.routes(app);
 app.listen(process.env.PORT, async () => {
     console.log(`Server is running on port ${process.env.PORT}`);
 
-    mongoose.connect(process.env.DB_URL)
+    DB_URL = undefined;
+
+    if(process.env.NODE_ENV == 'development'){
+        DB_URL = process.env.DB_URL
+    }else{
+        DB_URL = process.env.PROD_DB_URL
+        
+    }
+
+    mongoose.connect(DB_URL)
     .then(() => {
         console.log("Connected");
     })

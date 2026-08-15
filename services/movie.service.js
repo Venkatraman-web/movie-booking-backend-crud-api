@@ -1,6 +1,9 @@
 const { getMovie } = require('../controllers/movie.controller');
 const { Movie } = require('../models/movie.model');
 
+const StatusCode = require('http-status-codes');
+const {StatusCodes} = StatusCode;
+
 const createMovie = async (data) => {
     try{
             const movie = await Movie.create(data);
@@ -13,7 +16,7 @@ const createMovie = async (data) => {
                 err[key] = error.errors[key].message;
             });
             console.log(err);
-            return {err: err, code: 422};
+            return {err: err, code: StatusCodes.UNPROCESSABLE_ENTITY};
         }else{
             throw error;
         }
@@ -33,7 +36,7 @@ const getMovieById = async (id) => {
     if(!movie){
         return {
             err: 'No movie found for the corresponding id',
-            code: 404
+            code: StatusCodes.NOT_FOUND
         }
     }
     return movie;
@@ -50,7 +53,7 @@ const updateMovie = async (id, data) => {
                     err[key] = error.errors[key].message;
                 });
                 console.log(err);
-                return {err: err, code: 422};
+                return {err: err, code: StatusCodes.UNPROCESSABLE_ENTITY};
             }else{
                 throw error;
             }
@@ -68,7 +71,7 @@ const fetchMovies = async (filter) => {
     if(!movies){
         return {
             err: 'Not able to find the queries movies',
-            code: 404
+            code: StatusCodes.NOT_FOUND
         }
     }
     

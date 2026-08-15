@@ -21,7 +21,7 @@ const update = async (req, res) => {
         console.log(error);
 
         if (error.err) {
-            return res.status(error.code || 400).json({
+            return res.status(error.code || StatusCodes.BAD_REQUEST).json({
                 success: false,
                 err: error.err,
                 data: {},
