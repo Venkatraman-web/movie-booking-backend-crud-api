@@ -2,8 +2,12 @@ const paymentService = require('../services/payment.service');
 const { BOOKING_STATUS } = require('../utils/constants');
 const StatusCode = require('http-status-codes');
 const {StatusCodes} = StatusCode;
+const axios = require('axios');
 
 const {errorResponseBody, successResponseBody} = require('../utils/responsebody');
+const { User } = require('../models/user.model');
+const { Movie } = require('../models/movie.model');
+const { Theatre } = require('../models/theatre.model');
 
 
 const create = async (req, res) => {
@@ -26,8 +30,19 @@ const create = async (req, res) => {
                     json(errorResponseBody);
         
             }
+            const user = await User.findById(response.userId);
+            const movie = await Movie.findById(response.movieId);
+            const theatre = await Theatre.findById(response.theatreId);
+        
         successResponseBody.data = response;
-        successResponseBody.message = 'Booking completed successfully';
+        successResponseBody.message = 'Payment completed successfully';
+
+        axios.post(process.env.NOTI_SERVICE + '/notiservice/api/v1/notifications', {
+            subject: 'Your booking is Succesful',
+            recepientEmails: [...recepientEmails, user.email],
+            content: `Your booking for ${movie.name} in ${theatre.name} for ${response.noOfSeats} seats on ${response.timing} is successful. Your booking id is ${response.id}`
+        });
+
         return res.status(StatusCodes.OK).
         json(successResponseBody);
 
