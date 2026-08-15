@@ -1,3 +1,5 @@
+// Movie Booking Backend Using REST API
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const env = require('dotenv');
