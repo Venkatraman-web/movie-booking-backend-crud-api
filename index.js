@@ -19,10 +19,20 @@ ticketRoutes.routes(app);
 
 
 app.listen(process.env.PORT, async () => {
-    console.log('Notification server started');
+    console.log('Notification server started on PORT ', process.env.PORT);
     // sendMail(process.env.EMAIL, process.env.EMAIL_PASS);
+
+    DB_URL = undefined;
+
+    if(process.env.NODE_ENV == 'development'){
+        DB_URL = process.env.DB_URL
+    }else{
+        DB_URL = process.env.PROD_DB_URL
+        
+    }
+
     try {
-        await mongoose.connect(process.env.DB_URL);
+        await mongoose.connect(DB_URL);
         console.log('Successfully connected to MONGO')
     } catch (error) {
         console.log(error);

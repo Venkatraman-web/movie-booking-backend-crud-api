@@ -26,7 +26,7 @@ const getAllTickets = async (req, res) => {
 
         successResponseBody.data = response;
         successResponseBody.message = 'Successfully got all tickets';
-        return res.status(200).
+        return res.status(StatusCodes.OK).
         json(successResponseBody);
 
     } catch (error) {
@@ -37,7 +37,7 @@ const getAllTickets = async (req, res) => {
             json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(500).
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).
         json(errorResponseBody);
     }
 }
@@ -47,7 +47,7 @@ const getTicketById = async (req, res) => {
         const response = await notificationService.getById(req.params.id);
         successResponseBody.data = response;
         successResponseBody.message = 'Successfully got ticket of that id';
-        return res.status(200).
+        return res.status(StatusCodes.OK).
         json(successResponseBody);
     } catch (error) {
         console.log(error);
@@ -57,7 +57,7 @@ const getTicketById = async (req, res) => {
             json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(500).
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).
         json(errorResponseBody);
     }
 }

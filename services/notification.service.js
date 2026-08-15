@@ -1,5 +1,8 @@
 const { Ticket } = require('../models/ticketNotification.model');
 
+const StatusCode = require('http-status-codes');
+const {StatusCodes} = StatusCode;
+
 const create = async (data) => {
     try {
         const ticket = await Ticket.create(data);
@@ -12,7 +15,7 @@ const create = async (data) => {
                     err[key] = error.errors[key].message;
                 });
                 console.log(err);
-                return {err: err, code: 422};
+                return {err: err, code: StatusCodes.BAD_REQUEST};
             }else{
             throw error;
 
@@ -35,7 +38,7 @@ const getById = async (id) => {
         if(!response){
             throw {
                 err: 'No notfications found for given id',
-                code: 404
+                code: StatusCodes.NOT_FOUND
             }
         }
 
