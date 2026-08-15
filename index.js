@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 const { sendMail } = require('./services/email.service');
 const ticketRoutes = require('./routes/ticket.routes');
+const Cron = require('./crons/cron');
 
 const app = express();
 
@@ -26,4 +27,7 @@ app.listen(process.env.PORT, async () => {
     } catch (error) {
         console.log(error);
     }
+
+    Cron.mailerCron();
+
 })
