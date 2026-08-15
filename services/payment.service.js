@@ -1,10 +1,24 @@
 const {Payment}  = require('../models/payment.model');
 const {Booking} = require('../models/booking.model');
-const { BOOKING_STATUS, PAYMENT_STATUS } = require('../utils/constants');
+const { BOOKING_STATUS, PAYMENT_STATUS, USER_ROLE } = require('../utils/constants');
+const { User } = require('../models/user.model');
+const { Show } = require('../models/show.model');
 
 const createPayment = async (data) => {
     try {
     const booking = await Booking.findById(data.bookingId);
+    const show = await Show.findOne({
+        movieId: booking.movieId,
+        theatreId: booking.theatreId,
+        timing: booking.timing
+    });
+
+    if(booking.status == BOOKING_STATUS.successful){
+        throw {
+            err: 'Booking already done, cannot make a new payment against it',
+            code: 404,
+        }
+    }
     if(!booking){
         throw {
             err: 'No theatre found',
@@ -27,7 +41,7 @@ const createPayment = async (data) => {
         amount: data.amount
     });
 
-    if(payment.amount > booking.totalCost){
+    if(payment.amount != booking.totalCost){
         payment.status = PAYMENT_STATUS.failed;
         await payment.save();
     }
@@ -46,7 +60,10 @@ const createPayment = async (data) => {
 
     booking.status = BOOKING_STATUS.successful;
     await booking.save();
-    
+
+    show.noOfSeats -= data.noOfSeats;
+    await show.save();
+
     return booking;
 
     } catch (error) {
@@ -65,7 +82,54 @@ const createPayment = async (data) => {
     }
 }
 
+const getPaymentById = async (id) => {
+    try{
+        const payment = await Payment.findById(id).populate({
+            path: 'bookingId',
+            options: {strictPopulate: false}
+        });
+    if(!payment){
+        return {
+            err: 'No payment for given id',
+            code: 404
+        }
+    }
+    return payment;
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+    
+}
+
+const getAllPayments = async (userId) => {
+    try{
+        const user = await User.findById(userId);
+
+        let filter = {};
+        if(user.userRole != USER_ROLE.admin){
+            filter.userId = userId;
+        }
+        const bookings = await Booking.find(filter, '_id');
+
+        const bookingIds = bookings.map(booking => booking._id);
+
+        const payments = await Payment.find({
+            bookingId: { $in: bookingIds }
+        });
+
+        return payments;
+
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+
+}
+
 
 module.exports = {
-    createPayment
+    createPayment,
+    getPaymentById,
+    getAllPayments
 };

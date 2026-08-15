@@ -43,6 +43,47 @@ return res.status(err.code).
     }
 }
 
+const getPaymentDetailsById = async (req, res) => {
+    try{
+            const response = await paymentService.getPaymentById(req.params.id);
+            if(response.err){
+                errorResponseBody.err = response.err;
+                return res.status(response.code).
+                json(errorResponseBody);
+            }
+            successResponseBody.data = response;
+            return res.status(StatusCodes.OK).json(successResponseBody);
+    
+        }catch(err){
+            console.log(err);
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).
+            json(errorResponseBody);
+        }
+}
+
+const getAllPayments = async (req, res) => {
+    try {
+        const response = await paymentService.getAllPayments(req.user);
+
+        successResponseBody.data = response;
+        successResponseBody.message = 'Successfully fetched all payments for the user';
+        return res.status(StatusCodes.OK).
+        json(successResponseBody);
+
+    } catch (error) {
+        if(error.err){
+        errorResponseBody.err = error.err;
+return res.status(err.code).
+        json(errorResponseBody);
+        }
+        errorResponseBody.err = error;
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).
+        json(errorResponseBody);
+    }
+}
+
 module.exports = {
-    create
+    create,
+    getPaymentDetailsById,
+    getAllPayments
 };
